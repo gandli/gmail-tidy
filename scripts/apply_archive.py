@@ -14,7 +14,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 HOME = pathlib.Path(os.environ.get("GMAIL_TIDY_HOME") or HERE)
 GOG = os.environ.get("GOG_BIN", "gog")
 ACCT = os.environ.get("GOG_ACCOUNT", "")
-DELAY = float(os.environ.get("BATCH_DELAY", "4"))
+DELAY = float(os.environ.get("BATCH_DELAY", "20"))
 BACKOFF = float(os.environ.get("BACKOFF", "65"))
 
 
