@@ -58,6 +58,22 @@ undo_archive.py                          反向：--remove-label 标签 --add-la
 
 **默认 KEEP 是刻意的**——宁可漏归档，不可误归档。账单类即使在 PATTERNS 里命中"账单"也强制保留（见 classify.py 的 `b in ("KEEP","账单")`）。
 
+## 归档后怎么验证（重要）
+
+**`gog gmail search "in:inbox from:X"` 不权威。** Gmail 搜索索引最终一致：邮件已经移出收件箱并打好标签了，`search in:inbox` 仍会返回它（本地实测：归档后 14 封 qoder 邮件仍被 `in:inbox` 命中，而 `gog gmail get <id>` 的 `label_ids` 里已无 `INBOX`）。
+
+用这两条代替：
+
+```bash
+# 1) 收件箱总量（权威，一次调用）
+gog gmail labels get INBOX | awk -F'\t' '/messages_total/{print $2}'
+
+# 2) 单封邮件的真实标签（权威）
+gog gmail get <messageId> | grep label_ids      # 不含 INBOX = 已归档
+```
+
+只有当第 2 条显示 `label_ids` 里确实还有 `INBOX` 时，才是真的漏归档，重跑 `targeted_clean.py`。
+
 ## 配额
 
 Gmail API 按"每分钟查询成本"限流，`--count` 很贵（内部拉 500 封详情），脚本已避开。表现是 `403 rateLimitExceeded`。脚本内置退避（65s→130s→195s，3 次后放弃）。手动调试时 `sleep 60` 再试，别连发。
