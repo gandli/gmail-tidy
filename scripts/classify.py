@@ -73,7 +73,8 @@ def main() -> int:
     src = pathlib.Path(args.src)
     if not src.is_file():
         sys.exit(f"缺少快照文件 {src}，请先跑 fetch_query.sh")
-    rows = [r for r in csv.reader(src.open(), encoding="utf-8") if len(r) >= 6][1:]
+    rows = [r for r in csv.reader(src.open(encoding="utf-8", newline=""), delimiter="\t")
+            if len(r) >= 6][1:]
 
     plan: dict[str, list] = collections.defaultdict(list)
     keep: list = []
