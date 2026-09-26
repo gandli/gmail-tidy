@@ -29,19 +29,20 @@ case "$MODE" in
 esac
 
 echo "① 抓收件箱快照（只读，分页 + 限流退避）"
-"$HERE/fetch_query.sh" "in:inbox" "$GMAIL_TIDY_HOME/inbox_before.tsv" 100 >/dev/null
+"$HERE/fetch_query.sh" "in:inbox" "$GMAIL_TIDY_HOME/inbox_before.tsv" 50 >/dev/null
 before=$(( $(wc -l < "$GMAIL_TIDY_HOME/inbox_before.tsv") - 1 ))
 echo "   收件箱 $before 封"
 
 echo "② 按规则分类"
-"$PY" "$HERE/classify.py"
+"$PY" "$HERE/classify.py" --in "$GMAIL_TIDY_HOME/inbox_before.tsv" \
+        --out "$GMAIL_TIDY_HOME/manifest.json"
 
 case "$MODE" in
   --apply)
     echo "③ 执行归档"
-    "$PY" "$HERE/apply_archive.py" --apply
+    "$PY" "$HERE/apply_archive.py" --manifest "$GMAIL_TIDY_HOME/manifest.json" --apply
     echo "④ 归档后校验"
-    "$HERE/fetch_query.sh" "in:inbox" "$GMAIL_TIDY_HOME/inbox_after.tsv" 100 >/dev/null
+    "$HERE/fetch_query.sh" "in:inbox" "$GMAIL_TIDY_HOME/inbox_after.tsv" 50 >/dev/null
     after=$(( $(wc -l < "$GMAIL_TIDY_HOME/inbox_after.tsv") - 1 ))
     echo "   收件箱 $before → $after（清出 $((before - after)) 封）"
     echo "   剩余发件人 top10:"
@@ -49,7 +50,7 @@ case "$MODE" in
     ;;
   --verify)
     if [ ! -f "$GMAIL_TIDY_HOME/inbox_after.tsv" ]; then
-      "$HERE/fetch_query.sh" "in:inbox" "$GMAIL_TIDY_HOME/inbox_after.tsv" 100 >/dev/null
+      "$HERE/fetch_query.sh" "in:inbox" "$GMAIL_TIDY_HOME/inbox_after.tsv" 50 >/dev/null
     fi
     after=$(( $(wc -l < "$GMAIL_TIDY_HOME/inbox_after.tsv") - 1 ))
     echo "收件箱当前 $after 封，剩余发件人 top10:"

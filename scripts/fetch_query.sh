@@ -27,7 +27,7 @@ BACKOFF=${BACKOFF:-90}
 MAX_PAGES=${MAX_PAGES:-0}
 RESUME=${RESUME:-1}
 
-STATE="$GMAIL_TIDY_HOME/.fetch_state.$(printf '%s' "$Q" | cksum | cut -d' ' -f1)"
+STATE="$GMAIL_TIDY_HOME/.fetch_state.$(printf '%s%s' "$Q" "$OUT" | cksum | cut -d' ' -f1)"
 
 command -v "$GOG" >/dev/null 2>&1 || { echo "找不到 gog（可用 GOG_BIN 指定）" >&2; exit 127; }
 
