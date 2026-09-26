@@ -1,0 +1,46 @@
+{
+  "_docs": "gmail-tidy 分类规则。复制为 $GMAIL_TIDY_HOME/rules.json 后按自己的邮箱改。",
+
+  "_how": [
+    "categories: 每类的 Gmail 标签名与动作。archive=打标签+移出收件箱; label_only=只打标签(留在收件箱); keep=不动。",
+    "explicit: 按发件人精确匹配，优先级最高。带 @ 是完整地址，只写域名(如 example.com)则匹配该域所有地址。",
+    "patterns: 正则，匹配 from 字段。作用是让没列出的新发件人也能自动归类。",
+    "default_category: 都没命中时的兜底。默认 keep 最安全——宁可漏归档，不可误归档。"
+  ],
+
+  "categories": {
+    "notify":   { "label": "通知", "action": "archive" },
+    "news":     { "label": "订阅", "action": "archive" },
+    "promo":    { "label": "营销", "action": "archive" },
+    "social":   { "label": "社交", "action": "archive" },
+    "bill":     { "label": "账单", "action": "label_only" },
+    "todo":     { "label": "待办", "action": "label_only" },
+    "personal": { "label": null,      "action": "keep" }
+  },
+
+  "explicit": {
+    "_note": "下面只是通用示例，请替换成你自己的发件人",
+    "notify": [
+      "notifications@github.com", "noreply@github.com",
+      "no-reply@accounts.google.com", "platformnotifications-noreply@google.com",
+      "noreply@notify.cloudflare.com", "notifications@vercel.com"
+    ],
+    "news": [
+      "substack.com", "beehiiv.com", "mailchimpapp.com",
+      "newsletter@example.com", "digest@example-news.org"
+    ],
+    "promo": ["noreply@marketing.example.com", "offers@shop.example.com"],
+    "social": ["noreply@discord.com", "facebookmail.com", "linkedin.com"],
+    "bill": ["alerts@bank.example.com", "billing@saas.example.com", "paypal.com", "stripe.com"]
+  },
+
+  "patterns": [
+    ["social", "discord|facebookmail|linkedin\\.com|twitter\\.com|telegram|whatsapp|artstation|slack\\.com"],
+    ["news",   "newsletter|digest|weekly|monthly|roundup|beehiiv|substack|buttondown|mailchimp|(^|\\.)news@|blog@|简报|周刊"],
+    ["promo",  "promo|marketing|(^|\\.)sale@|(^|\\.)offers?@|(^|\\.)deals?@|discount|campaign|giftcard|voucher|促销|优惠|秒杀"],
+    ["notify", "noreply|no-reply|no_reply|donotreply|do-not-reply|notif|alert|postmaster|mailer-daemon|bounce|(^|\\.)support@|security|verify|automated|robot|@notice\\.|updates?@|releases?@|系统通知|安全提醒"],
+    ["bill",   "invoice|statement|receipt|billing|creditcard|账单|发票|对账单|消费|订单|还款"]
+  ],
+
+  "default_category": "personal"
+}

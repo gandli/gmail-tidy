@@ -1,0 +1,11 @@
+# 忽略真实数据（绝不入库）
+inbox_*.tsv
+manifest.json
+archive_manifest.json
+rules.json
+*.log
+probe*.txt
+
+# Python
+__pycache__/
+*.py[cod]
