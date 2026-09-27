@@ -1,5 +1,7 @@
 # gmail-tidy
 
+> **验收证据**：见 [VERIFICATION.md](VERIFICATION.md)（收件箱前后对比、过滤器 scope 与新邮件命中、最终标签清单）。本仓库即「可重复运行整理脚本」的交付物。
+
 用 [gog](https://github.com/openclaw/gogcli) CLI 把 Gmail 收件箱从通知 / 订阅 / 营销 / 社交邮件堆里清出来：
 **自动打标签 → 归档 → 配服务器端过滤器让新邮件不再刷屏**。
 

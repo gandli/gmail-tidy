@@ -91,7 +91,7 @@ rule "契约④ 可重复运行脚本"
 # 脚本可能在 $HERE/scripts/ 或与 $HERE 同级（工作目录情形）
 SDIR="$HERE/scripts"
 [ -d "$SDIR" ] || SDIR="$HERE"
-for f in tidy.sh fetch_query.sh classify.py apply_archive.py undo_archive.py targeted_clean.py provision.py; do
+for f in tidy.sh fetch_query.sh classify.py apply_archive.py undo_archive.py targeted_clean.py provision.py closeout.py; do
   if [ -f "$SDIR/$f" ]; then printf '  [PASS] %s\n' "$SDIR/$f"
   else printf '  [FAIL] %s 缺失\n' "$f"; fi
 done
