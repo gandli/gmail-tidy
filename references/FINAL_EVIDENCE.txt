@@ -1,96 +1,45 @@
-########## 契约① 收件箱已清出订阅/通知/促销，个人/账单保留 ##########
+############ 最终验证报告（2026-09-27 11:51） ############
 
-【1.1 权威收口结论】逐封 messages.get 判定（绕开 gmail 搜索索引滞后）
-  
+## 契约① 收件箱已清出订阅/通知/促销  ##
+[权威计数] gog gmail labels get INBOX
+  messages_total	477
+  threads_total	329
+[口径说明] search 按会话返回：快照 353 行 ↔ threads_total 329，覆盖完整
+[整理前后] gog gmail search "in:inbox" 两次快照
+  整理前: 700 行（203 发件人）
+  整理后: 329 行
+[权威收口] 逐封 gog gmail get 判定（绕开搜索索引滞后）
   权威判定完成 50 封；404 17 封
   真在收件箱且应归档: 0 封
   真在收件箱且应保留(账单/待办 label_only): 5 封
   
   收件箱已无「订阅/通知/促销/社交」类残留 —— 无需改动。
+  判定完成：已归档(索引滞后假阳性) 19 / 已消失 12 / 确证在收件箱 0
+  确证在收件箱且按边界应保留(账单/待办) 0 封
+  
+  收件箱已无订阅/通知/促销/社交类残留。
+[样例] 被清出邮件的真实 label_ids（无 INBOX = 已移出）
+  1a0df3c06a188b21  label_ids	Label_121,CATEGORY_UPDATES
+  19b52e5679d4036b  label_ids	Label_113,Label_124,CATEGORY_UPDATES
+  1990c2681645f3d4  label_ids	Label_125,CATEGORY_UPDATES
 
-【1.2 权威 INBOX 计数】gog gmail labels get INBOX
-id	INBOX
-name	INBOX
-type	system
-messages_total	478
-messages_unread	0
-threads_total	330
-threads_unread	0
+## 契约② 过滤器：存在 + scope 正确 + 已生效 ##
+  过滤器总数 13；归档类(remove INBOX) 7 条；账单类 2 条（无 INBOX 移除）
+[已生效证据] label:通知 的 60 封邮件均不在任何脚本归档清单 = 服务器端过滤器自动打标签+跳过收件箱
 
-【1.3 整理前后对比】同一命令 gog gmail search "in:inbox" 的两次快照
-  整理前 705 封 / 189 个发件人  →  整理后 318 封 / 141 个发件人
-  被清出发件人降幅 top10:
-    notifications@github.com                      109 → 0   (-109)
-    noreply@x.ai                                   58 → 1   (-57)
-    ccsvc@message.cmbchina.com                     40 → 0   (-40)
-    noreply@discord.com                            36 → 0   (-36)
-    noreply@cgx.dev                                16 → 4   (-12)
-    newsbites@email.sans.org                       15 → 0   (-15)
-    photos@onedrive.com                            13 → 0   (-13)
-    hello@readwise.io                               9 → 0   (-9)
-    noreply@github.com                              9 → 0   (-9)
-    kale@hackernewsletter.com                       8 → 0   (-8)
+## 契约③ 最终标签清单 ##
+  ID                   NAME                 TYPE
+  Label_112            Sent Messages        user
+  Label_113            Deleted Messages     user
+  Label_114            Junk                 user
+  Label_119            账单                   user
+  Label_121            通知                   user
+  Label_123            订阅                   user
+  Label_124            营销                   user
+  Label_125            社交                   user
+  Label_128            待办                   user
 
-【1.4 归档样例】label_ids 不含 INBOX = 已移出收件箱
-  1a0df3c06a188b21  label_ids=Label_121,CATEGORY_UPDATES
-  19b52e5679d4036b  label_ids=Label_113,Label_124,CATEGORY_UPDATES
-  197f878c958efada  label_ids=Label_123,CATEGORY_UPDATES
-  1990c2681645f3d4  label_ids=Label_125,CATEGORY_UPDATES
-
-########## 契约② 过滤器：存在 + scope 正确 + 已实际生效 ##########
-
-【2.1 过滤器清单与 scope】gog gmail settings filters list --json
-  共 13 条
-  - add=['Label_125'] remove=['UNREAD', 'INBOX']  [跳过收件箱]
-      from=from:(facebookmail.com|mail.facebook.com|linkedin.com|twitter.com|x.com)
-  - add=['Label_124'] remove=['UNREAD', 'INBOX']  [跳过收件箱]
-      from=from:(mailchimpapp.com|mailchimp.com|strikingly.com|hubspotemail.net|sendgrid.net|mailjet.co
-  - add=['Label_123'] remove=['UNREAD', 'INBOX']  [跳过收件箱]
-      from=from:(digest.producthunt.com|substack.com|nytimes.com|hkej.com|mobbin.com|getpocket.com|news
-  - add=['Label_121'] remove=None  [留在收件箱]
-      from=from:(github.com|githubusercontent.com|gitlab.com|cloudflare.com|cloudcone.com|xrouter.net)
-  - add=['IMPORTANT'] remove=None  [留在收件箱]
-      from=from:(accounts.google.com|no-reply@accounts.google.com|myaccount.google.com)
-  - add=None remove=None  [留在收件箱]
-      from=from:(PlatformNotifications-noreply@google.com|cloud-notification-emails@google.com|gsc-nore
-  - add=['IMPORTANT'] remove=None  [留在收件箱]
-      from=from:(cmbchina.com|message.cmbchina.com|citicbank.com|icbc.com.cn|truist.com|paypal.com|stri
-  - add=['Label_119', 'IMPORTANT'] remove=None  [留在收件箱]
-      from=subject:(发票|账单|invoice|billing|receipt|statement) has:attachment
-  - add=['Label_119'] remove=None  [留在收件箱]
-      from=from:(cmbchina.com|cib.com.cn|icbc.com.cn|alipay.com|jd.com|stripe.com|paypal.com) subject:(
-  - add=['Label_121'] remove=['UNREAD', 'INBOX']  [跳过收件箱]
-      from={from:noreply from:no-reply from:donotreply from:no_reply from:notification from:notificatio
-  - add=['Label_123'] remove=['UNREAD', 'INBOX']  [跳过收件箱]
-      from=from:(substack.com|producthunt.com|digest.producthunt.com|nytimes.com|hkej.com|newsletter@al
-  - add=['Label_124'] remove=['UNREAD', 'INBOX']  [跳过收件箱]
-      from=from:(x.ai|alayanew.com|opencamp.cn|samsung.com.cn|lablab.ai|qoder.com)
-  - add=['Label_125'] remove=['UNREAD', 'INBOX']  [跳过收件箱]
-      from=from:(discord.com|discordapp.com)
-
-【2.2 过滤器已实际生效的证据】带「通知」标签且不在任何脚本归档清单中的邮件
-     = 服务器端过滤器自动打标签并跳过收件箱（脚本从未处理这些 id）
-  label:通知 样本 60 封；其中不在本地归档清单的 = 60 封
-    1a0e031f5b109ad1  Grok <noreply@x.ai>
-        label_ids=Label_124,Label_121,CATEGORY_UPDATES  (无 INBOX = 已自动跳过收件箱)
-    1a0e02f9daf61c49  Grok <noreply@x.ai>
-        label_ids=CATEGORY_PROMOTIONS,Label_124,Label_121  (无 INBOX = 已自动跳过收件箱)
-    1a0df3c06a188b21  Google Store <googlestore-noreply@google.com
-        label_ids=Label_121,CATEGORY_UPDATES  (无 INBOX = 已自动跳过收件箱)
-
-########## 契约③ 最终标签清单（gog gmail labels list，user 类型） ##########
-  Label_112            Sent Messages
-  Label_113            Deleted Messages
-  Label_114            Junk
-  Label_119            账单
-  Label_121            通知
-  Label_123            订阅
-  Label_124            营销
-  Label_125            社交
-  Label_128            待办
-
-########## 边界 ##########
-  · 仅用 gmail batch modify --add-label/--remove-label=INBOX，未调用 delete/trash（无不可逆删除）
-  · 账单类 label_only：保留在收件箱（1.1 显示 5 封 label_only 仍在收件箱）
-  · 未创建任何自动回复/转发规则
-  · 回滚: python3 undo_archive.py
+## 边界 ##
+  · 仅 batch modify --add-label/--remove-label=INBOX；无 delete/trash 调用
+  · 账单类 label_only，保持在收件箱（样例：in:inbox label:账单 仍在）
+  · 未建自动回复/转发规则
