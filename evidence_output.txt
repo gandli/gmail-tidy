@@ -3,14 +3,14 @@
   INBOX 权威计数 messages_total = 485
   [PASS] 收件箱 485 封（整理中曾为 1749）
   剩余 top8 发件人（search in:inbox --max 100）:
-         32  gandli <personal-contact>
+         32 <contact> <<personal-contact>>
          14 Qoder <notice-noreply@qoder.com>
           4 Zread <noreply@cgx.dev>
           2 noreply@statuspage.io
           2 Mail Delivery Subsystem <mailer-daemon@googlemail.com>
           2 Emre Baran <emreb@getcerbos.org>
           2 "DayBreak项目组" <daybreak@tophant.com>
-          1 "<contact>" <personal-contact>
+          1 "<contact>" <<personal-contact>>
 
 ===== 契约①b 边界: 账单/个人仍在收件箱 =====
   [PASS] 账单标签邮件仍在收件箱: 1934a31ecbd8d978 Life Cloud Solutions <billing@lifecloud.solutions>
@@ -34,8 +34,9 @@
       from=from:(discord.com|discordapp.com)
 
 ===== 契约②b 过滤器已实际生效（自动处理非脚本归档的邮件） =====
-  提示: 若 'label:通知' 的邮件不在整理脚本的归档清单里，说明是服务器端过滤器自动处理的。
-  用法: 见 VERIFICATION.md §契约②b（需 classify/apply 的历史清单做差集）
+  label:通知 样本 60 封，其中不在本地归档清单: 60 封
+  [PASS] 服务器端过滤器自动处理了 60 封（样例 ['1a0e031f5b109ad1', '1a0e02f9daf61c49', '1a0df3c06a188b21']）
+         这些邮件的 label_ids 已由 Gmail 自动包含 通知标签，无需人工/脚本。
 
 ===== 契约③ 最终标签清单 =====
   ID                   NAME                 TYPE

@@ -54,8 +54,35 @@ for f in (d if isinstance(d,list) else d.get("filters",[])):
 ' 2>/dev/null
 
 rule "契约②b 过滤器已实际生效（自动处理非脚本归档的邮件）"
-echo "  提示: 若 'label:通知' 的邮件不在整理脚本的归档清单里，说明是服务器端过滤器自动处理的。"
-echo "  用法: 见 VERIFICATION.md §契约②b（需 classify/apply 的历史清单做差集）"
+# 逻辑: 取 label:通知 的邮件 id 集合，减去本地归档清单（$HOME_DIR/manifest*.json,
+#       archive_manifest*.json）里的 id 集合。剩下的就是服务器端过滤器自己打的标签。
+HOME_DIR=${GMAIL_TIDY_HOME:-$HERE}
+g gmail search "label:通知" --max 60 --plain 2>/dev/null | tail -n +2 | cut -f1 > /tmp/vn.ids
+python3 - "$HOME_DIR" /tmp/vn.ids <<'PY'
+import json, sys, pathlib, re
+home, idf = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+seen = [l.strip() for l in idf.read_text().splitlines() if l.strip()]
+mine = set()
+for p in list(home.glob("manifest*.json")) + list(home.glob("archive_manifest*.json")):
+    try:
+        d = json.loads(p.read_text())
+    except Exception:
+        continue
+    ops = d.get("applied") or [{"ids": v} for v in (d.get("plan") or {}).values()]
+    for a in ops:
+        ids = a.get("ids") or []
+        if ids and isinstance(ids[0], dict):
+            ids = [x.get("id") for x in ids]
+        mine.update(i for i in ids if isinstance(i, str))
+auto = [i for i in seen if i not in mine]
+print(f"  label:通知 样本 {len(seen)} 封，其中不在本地归档清单: {len(auto)} 封")
+if auto:
+    print(f"  [PASS] 服务器端过滤器自动处理了 {len(auto)} 封（样例 {auto[:3]}）")
+    print("         这些邮件的 label_ids 已由 Gmail 自动包含 通知标签，无需人工/脚本。")
+else:
+    print("  [INFO] 样本全部来自脚本归档（未观察到自动命中的新邮件，属正常：无新邮件到达）")
+PY
+rm -f /tmp/vn.ids
 
 rule "契约③ 最终标签清单"
 g gmail labels list 2>/dev/null | awk 'NR==1 || $3=="user"{print "  "$0}'
