@@ -76,7 +76,7 @@
     ],
     [
       "news",
-      "newsletter|digest|weekly|monthly|roundup|beehiiv|substack|buttondown|mailchimp|(^|\\.)news@|blog@|简报|周刊|informer|daily\\\\.dev|deepl\\\\.com"
+      "newsletter|digest|weekly|monthly|roundup|beehiiv|substack|buttondown|mailchimp|(^|\\.)news@|blog@|简报|周刊|informer|daily\\\\.dev|deepl\\\\.com|freecodecamp\\.org|dev\\\\.to|newsletter"
     ],
     [
       "promo",
