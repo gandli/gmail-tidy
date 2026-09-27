@@ -137,7 +137,7 @@ ID                   NAME                 TYPE
 Label_112            Sent Messages        user
 Label_113            Deleted Messages     user
 Label_114            Junk                 user
-Label_119            账单                   user
+Label_119            账单/发票                user
 Label_121            通知                   user
 Label_123            订阅                   user
 Label_124            营销                   user
